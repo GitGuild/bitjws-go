@@ -73,7 +73,7 @@ func (m *SigningMiddleware) Verify(w http.ResponseWriter, r *http.Request) error
 
 	// Parse the message into a signed {header, claimset, sig}
 	// TODO: Cater for multi-signed messages
-	signed := ParseMessage(jwsMessage)
+	signed := ParseSignedMessage(jwsMessage)
 	if signed == nil {
 		err := errors.New("Message must be a valid Bitcoin JWS serialisation")
 		OnError(w, r, err.Error())
