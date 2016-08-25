@@ -1,4 +1,4 @@
-package bittsign
+package bitjws
 
 import ecdsa              "crypto/ecdsa"
 import crypto             "github.com/ethereum/go-ethereum/crypto"

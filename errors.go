@@ -1,4 +1,4 @@
-package bittsign
+package bitjws
 
 import "errors"
 

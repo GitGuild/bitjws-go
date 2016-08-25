@@ -1,10 +1,12 @@
-package bittsign
+package bitjws
+
 
 import ecdsa               "crypto/ecdsa"
 import "fmt"
 import "time"
 import "bytes"
 import "encoding/json"
+
 
 //------------------------------------------------------------------------------
 // Encoding a signed message gives us a base64 encoded triple
@@ -41,7 +43,7 @@ type ClaimSet struct {
 
 func CreateDefaultClaims(pubkey *ecdsa.PublicKey) *ClaimSet {
 	return &ClaimSet{
-		Iss: "http://www.bitt.com/",
+		Iss: "http://www.example.com/",
 		PubKey: Base64Encode(FromECDSAPub(pubkey)),
 	}
 }
@@ -52,7 +54,7 @@ func CreateDefaultClaimsMulti(pubkeys []*ecdsa.PublicKey) *ClaimSet {
 		encodedPubKeys = append(encodedPubKeys, []string{Base64Encode(FromECDSAPub(pubkey))}...)
 	}
 	return &ClaimSet{
-		Iss: "http://www.bitt.com/",
+		Iss: "http://www.example.com/",
 		PubKeys: encodedPubKeys,
 	}
 }
