@@ -31,7 +31,7 @@ claims := &bitjws.ClaimSet{
 }
 
 // Sign the header / claimset
-signedMessage, err := SimpleSign(seckey, header, claims)
+signedMessage, err := bitjws.SimpleSign(seckey, header, claims)
 if err != nil {
         return nil, err
 }
