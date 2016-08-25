@@ -21,24 +21,28 @@ import "encoding/json"
 //------------------------------------------------------------------------------
 
 type ClaimSet struct {
-	Iss   string `json:"iss"`             // email address of the client_id of the application making the access token request
-	Scope string `json:"scope,omitempty"` // space-delimited list of the permissions the application requests
-	Aud   string `json:"aud,omitempty"`             // descriptor of the intended target of the assertion (Optional).
-	Exp   int64  `json:"exp"`             // the expiration time of the assertion (seconds since Unix epoch)
-	Iat   int64  `json:"iat"`             // the time the assertion was issued (seconds since Unix epoch)
-	Typ   string `json:"typ,omitempty"`   // token type (Optional).
+	Iss     string `json:"iss"`             // email address of the client_id of the application making the access token request
+	Scope   string `json:"scope,omitempty"` // space-delimited list of the permissions the application requests
+	Aud     string `json:"aud,omitempty"`             // descriptor of the intended target of the assertion (Optional).
+	Exp     int64  `json:"exp"`             // the expiration time of the assertion (seconds since Unix epoch)
+	Iat     int64  `json:"iat"`             // the time the assertion was issued (seconds since Unix epoch)
+	Typ     string `json:"typ,omitempty"`   // token type (Optional).
+
 	// Email for which the application is requesting delegated access (Optional).
-	Sub string `json:"sub,omitempty"`
+	Sub     string `json:"sub,omitempty"`
 
 	// The old name of Sub. Client keeps setting Prn to be
 	// complaint with legacy OAuth 2.0 providers. (Optional)
-	Prn string `json:"prn,omitempty"`
+	Prn     string `json:"prn,omitempty"`
 
 	// The public key corresponding to the private key used in signing
-	PubKey string `json:"pubkey,omitempty"`
+	PubKey  string `json:"pubkey,omitempty"`
 
 	// The public keys corresponding to the private keys used to sign
 	PubKeys []string `json:"pubkeys,omitempty"`
+
+        // A generic message expected to be JSON encodable
+        Msg     interface{} `json:"msg,omitempty"`
 }
 
 func CreateDefaultClaims(pubkey *ecdsa.PublicKey) *ClaimSet {
