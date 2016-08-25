@@ -29,12 +29,15 @@ type DSAAdapter interface {
 
 // The state stored within this handler
 type SigningMiddleware struct {
+	// This services private key
+	SecKey *ecdsa.PrivateKey
 	// The DSA configuration
 	DSA *DSAAdapter
 }
 
-func New(db *DSAAdapter) *SigningMiddleware {
+func New(seckey *ecdsa.PrivateKey, db *DSAAdapter) *SigningMiddleware {
 	return &SigningMiddleware{ 
+		SecKey: seckey,
 		DSA: db,
 	}
 }
@@ -84,11 +87,25 @@ func (m *SigningMiddleware) Verify(w http.ResponseWriter, r *http.Request) error
 	pubkey := ToECDSAPub(pubkeybytes)
 	
 	// Lookup public key in DSA
-	key, err := m.DSA.GetRegisteredKey(pubkey)
+	key, err := m.DSA.GetRegisteredKey(pubkey, &m.SecKey.PublicKey)
 	if err != nil {
 		// User is not registered, fail to authorize
 		OnError(w, r, err.Error())
 		return fmt.Errorf("Error: %v\n", err)
+	}
+
+	// User is registered, check the signature against the request body
+	res, err := signed.SimpleVerify(&m.SecKey.PublicKey)
+	if err != nil {
+		// An error occured during signature verification
+		OnError(w, r, err.Error())
+		return fmt.Errorf("Error: %v", err)
+	}
+	if res == false {
+		// Signature didn't match expected
+		err = errors.New("Signature verification failed")
+		OnError(w, r, err.Error())
+		return fmt.Errorf("Error: %v", err)
 	}
 
 	// Message is valid, add public key to request context
